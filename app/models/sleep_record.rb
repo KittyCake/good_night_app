@@ -1,8 +1,8 @@
 class SleepRecord < ApplicationRecord
-  belongs_to :user
-
   validates :started_at, :ended_at, presence: true
   validate :end_after_start
+
+  belongs_to :user
 
   def duration
     ended_at - started_at

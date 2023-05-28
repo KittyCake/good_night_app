@@ -1,24 +1,53 @@
-# README
+# Good Night Application API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Description
 
-Things you may want to cover:
+Good Night Application API is a simple web application to track users' sleep time. It allows users to record when they go to bed and wake up. Users can also follow and unfollow other users.
 
-* Ruby version
+## Version
+- Ruby version 3.0.0
+- Rails 7.0.4.3
 
-* System dependencies
+## Installation
 
-* Configuration
+1. Clone the repo
 
-* Database creation
+2. Navigate to the project directory
+```
+cd good_night_app
+```
 
-* Database initialization
+3. Install all dependencies
+```
+bundle install
+```
 
-* How to run the test suite
+4. Create and initialize database
+```
+rake db:create
+rake db:migrate
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+## Run the application
+```
+rails s
+```
 
-* Deployment instructions
+Then navigate to http://localhost:3000 in your browser.
 
-* ...
+## API Endpoints
+
+### SleepRecordsController
+- POST /sleep_records: Clock in operation
+- GET /sleep_records: Get all clocked-in times, ordered by creation time.
+- GET /followings_records: Get sleep records of a user's following users from the previous week, sorted based on the duration.
+
+### FollowsController
+- POST /follows: Users can follow other users.
+- DELETE /follows/destroy_by_user_ids: Users can unfollow other users.
+
+## Running Tests
+
+```
+bundle exec rspec
+```

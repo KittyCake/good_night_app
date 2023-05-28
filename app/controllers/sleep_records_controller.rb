@@ -3,13 +3,11 @@ class SleepRecordsController < ApplicationController
 	def index
 		sleep_records = SleepRecord.order(:created_at)
     render json: sleep_records, status: :ok
-	rescue => e
-		Rails.logger.error e.message
-		render json: e.message, status: :bad_request
 	end
 
-	# Clock In operation
+	# clock in operation
 	def create
+		validate_user_existence
 		@sleep_record = SleepRecord.new(sleep_record_params)
 
 		if @sleep_record.save
@@ -17,13 +15,10 @@ class SleepRecordsController < ApplicationController
 		else
 			render json: @sleep_record.errors, status: :unprocessable_entity
 		end
-	rescue => e
-		Rails.logger.error e.message
-		render json: e.message, status: :bad_request
 	end
 
-	# See the sleep records of a user’s All following users' sleep records.
-	# from the previous week, which are sorted based on the duration of All friends
+	# see the sleep records of a user’s all following users' sleep records.
+	# from the previous week, which are sorted based on the duration of all friends
 	def followings_records
 		user = User.includes(:followed_users).find_by!(id: sleep_record_params[:user_id])
 		followed_users_ids = user.followed_users.map(&:id)
@@ -33,9 +28,6 @@ class SleepRecordsController < ApplicationController
 																			.sort_by { |record| -record.duration }
 
 		render json: sleep_records_sorted, status: :ok
-	rescue => e
-		Rails.logger.error e.message
-		render json: e.message, status: :bad_request
 	end
 
 	private
@@ -43,5 +35,9 @@ class SleepRecordsController < ApplicationController
   def sleep_record_params
     params.require(:sleep_record).permit(:started_at, :ended_at, :user_id)
   end
+
+	def validate_user_existence
+		User.find_by!(id: sleep_record_params[:user_id])
+	end
 end
 
